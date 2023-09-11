@@ -1,0 +1,196 @@
+import UIKit
+
+
+
+struct Daire {
+    var odaSayisi : Int
+    var salonSayisi : Int
+    var daireBuyuklugu : Double
+    var banyoSayisi : Int
+    var tuvaletSayisi :  Int
+    var satilik : Bool
+    var kiralik : Bool
+    var dolu : Bool
+    var daireSahibininAdi : String
+    var daireSahibininTelNo : String
+    var katNo : Int?
+    var kapiNo : Int?
+    var bulunduguApartman : Apartman?
+    
+    func daireBilgileriniGoster() {
+        guard let katno = katNo  else {return }
+        guard let kapino = kapiNo else {return}
+        
+        print("""
+        -----------------------------------------
+                DAİRE BİLGİLERİ
+Oda Sayısı : \(odaSayisi)
+            Salon Sayısı : \(salonSayisi)
+            Dairenin Buyuklugu : \(daireBuyuklugu)
+            Banyo Sayısı : \(banyoSayisi)
+            Tuvalet Sayısı : \(tuvaletSayisi)
+            \(katno). Kat Daire - \(kapino)
+""")
+        if satilik {
+            print("Daire Satılık")
+        }
+        else {
+            print("Daire satılık değil")
+        }
+        if kiralik {
+            print("Daire Kiralık")
+        } else {
+            print("Daire Kiralık Değil")
+        }
+        if dolu {
+            print("Dairede şuan birileri oturuyor")
+        } else {
+            print("Dairede şuan birileri oturmuyor yani boş")
+        }
+        
+        
+    }//fonksiyon bitişi
+    
+    init(odaSayisi : Int ,salonSayisi : Int , daireBuyuklugu : Double, banyoSayisi : Int , tuvaletSayisi : Int , satilik : Bool, kiralik : Bool , dolu : Bool , daireSahibininAdi : String, daireSahibininTelNo : String) {
+        self.odaSayisi = odaSayisi
+        self.salonSayisi = salonSayisi
+        self.daireBuyuklugu = daireBuyuklugu
+        self.banyoSayisi = banyoSayisi
+        self.tuvaletSayisi = tuvaletSayisi
+        self.satilik = satilik
+        self.kiralik = kiralik
+        self.dolu = dolu
+        self.daireSahibininAdi = daireSahibininAdi
+        self.daireSahibininTelNo = daireSahibininTelNo
+        
+    }
+    
+}//struct bitişi
+
+struct AdresBilgileri {
+    
+    var il : String
+    var ilce : String
+    var postaKodu : Int
+    var mahalleAdi : String
+    var caddeAdi : String
+    var sokakAdi : String
+    func adresBilgileriniGoster() -> String {
+        return """
+        
+        İl : \(il)
+        İlçe : \(ilce)
+        Posta Kodu : \(postaKodu)
+        \(mahalleAdi) Mahallesi
+        \(caddeAdi) Caddesi
+        \(sokakAdi) Sokağı
+
+        """
+        }//adresbilgilerinigoster metodu bitişi
+    
+}//AdresBilgileri yapısı bitişi
+
+struct Apartman {
+    
+    var apartmanAdi : String = ""
+    var katSayisi : Int = -1
+    var apartmanAdresi : AdresBilgileri
+    var daireSayisi : Int = 0
+    var daireler : [Daire]
+    
+   mutating func katEkle() {
+        
+        katSayisi += 1
+    }
+    mutating func katEkle(eklenecekKatSayisi : Int) {
+        katSayisi += eklenecekKatSayisi
+    }
+    mutating func daireEkle(daire : inout Daire, katNo : Int, kapiNo : Int) {
+        
+        if katNo > katSayisi {
+            print("Böyle bir daire kat sayısından dolayı eklenemez")
+        } else {
+            
+            daire.bulunduguApartman = self
+            daire.katNo = katNo
+            daire.kapiNo = kapiNo
+            self.daireSayisi += 1
+           daireler.append(daire)
+        }
+        
+    }
+    
+    func apartmanBilgileriniGoster() {
+        
+        
+        print("""
+    ------------------------------------------------
+            Apartmanda Bulunan Daire Sayısı : \(daireler.count)
+            Kat Sayısı : \(katSayisi)
+                *****ADRES******
+            \(apartmanAdresi.adresBilgileriniGoster())
+
+    ------------------------------------------------
+""")
+    }
+    func kisininAdresiniBul(adi : String) {
+        
+        var bulundu : Bool = false
+        
+        for daire in daireler {
+            if daire.daireSahibininAdi == adi {
+                bulundu = true
+                print("""
+
+        ------------------------------------------------
+                    ARADIĞINIZ KİŞİNİN ADRESİ
+                    \(apartmanAdresi.adresBilgileriniGoster())
+                    \(apartmanAdi) Apartmanı
+                    Kat No : \(daire.katNo!)
+                    Kapi No : \(daire.kapiNo!)
+                    Adı : \(daire.daireSahibininAdi)
+                    Telefon Numarası : \(daire.daireSahibininTelNo)
+
+        ------------------------------------------------
+
+""")
+                break
+            } // if bitişi
+            
+            }// for döngüsünün bitişi
+        if !bulundu  {
+            print("Adres Bilgisi : Böyle bir kişi bu apartmanda oturmuyor")
+            
+        }
+        
+    }
+    
+    
+    
+}
+
+
+
+var d1 :  Daire = Daire(odaSayisi: 3, salonSayisi: 2, daireBuyuklugu: 210, banyoSayisi: 2, tuvaletSayisi: 1, satilik: false, kiralik: false, dolu: true, daireSahibininAdi: "Ahmet", daireSahibininTelNo: "2342342342")
+
+var d2 : Daire = Daire(odaSayisi: 2, salonSayisi: 1, daireBuyuklugu: 100, banyoSayisi: 1, tuvaletSayisi: 1, satilik: true, kiralik: true, dolu: false, daireSahibininAdi: "Selman", daireSahibininTelNo: "322342342")
+
+
+var d3 : Daire = Daire(odaSayisi: 3, salonSayisi: 1, daireBuyuklugu: 200, banyoSayisi: 2, tuvaletSayisi: 0, satilik: true, kiralik: true, dolu: true, daireSahibininAdi: "Mehmet", daireSahibininTelNo: "11231231231")
+
+
+var apartman1 : Apartman = Apartman(apartmanAdi: "IOS Öğrencileri", katSayisi: 10, apartmanAdresi: AdresBilgileri(il: "Ankara", ilce: "Kızılay", postaKodu: 3123, mahalleAdi: "IOS", caddeAdi: "SWift 4", sokakAdi: "XCode"), daireSayisi: 0, daireler: [Daire]())
+
+d1.daireBilgileriniGoster()
+apartman1.katEkle(eklenecekKatSayisi: 5)
+apartman1.apartmanBilgileriniGoster()
+
+apartman1.daireEkle(daire: &d1, katNo: 1, kapiNo: 1)
+apartman1.daireEkle(daire: &d2, katNo: 2, kapiNo: 4)
+apartman1.daireEkle(daire: &d3, katNo: 4, kapiNo: 18)
+
+d1.daireBilgileriniGoster()
+apartman1.apartmanBilgileriniGoster()
+apartman1.kisininAdresiniBul(adi: "Ahmet1")
+
+d2.daireBilgileriniGoster()
